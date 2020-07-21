@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>officialDemoTest</title>
+
+    <script type="text/javascript" src="https://public.tableau.com/javascripts/api/tableau-2.min.js"></script>
+    <script type="text/javascript">
+        var viz, workbook, activeSheet;
+
+        //初始化viz
+        function initViz() {
+            var containerDiv = document.getElementById("container"),
+                url = "https://public.tableau.com/views/WorldIndicators/GDPpercapita",
+                options = {
+                    hideTabs: true,
+                    onFirstInteractive: function () {
+                        workbook = viz.getWorkbook();
+                        activeSheet = workbook.getActiveSheet();
+                    }
+                };
+            viz = new tableau.Viz(containerDiv, url, options);
+        }
+
+        //只选The Americas
+        function filterSingleValue() {
+            activeSheet.applyFilterAsync(
+                "Region",
+                "The Americas",
+                tableau.FilterUpdateType.REPLACE);
+        }
+
+        //额外再加两个值
+        function addValuesToFilter() {
+            activeSheet.applyFilterAsync(
+                "Region",
+                ["Europe", "Middle East"],
+                tableau.FilterUpdateType.ADD);
+        }
+
+        //去除Europe
+        function removeValuesFromFilter() {
+            activeSheet.applyFilterAsync(
+                "Region",
+                "Europe",
+                tableau.FilterUpdateType.REMOVE);
+        }
+
+        //筛选横坐标40000~60000范围
+        function filterRangeOfValues() {
+            activeSheet.applyRangeFilterAsync(
+                "F: GDP per capita (curr $)",
+                {
+                    min: 40000,
+                    max: 60000
+                },
+                tableau.FilterUpdateType.REPLACE);
+        }
+
+    </script>
+
+</head>
+
+<body onload="initViz();">
+    <div id="container"></div>
+    <button onclick="filterSingleValue();">只选The Americas</button>
+    <button onclick="addValuesToFilter();">再加两个值</button>
+    <button onclick="removeValuesFromFilter();">去除Europe</button>
+    <button onclick="filterRangeOfValues();">筛选横坐标</button>
+</body>
+
+
+</html>
